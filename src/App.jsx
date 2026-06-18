@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { LazyMotion, domAnimation, motion, AnimatePresence } from 'framer-motion';
 import { Routes, Route, useNavigate, useParams, useLocation, Navigate } from 'react-router-dom';
 import { Compass, BookOpen, Star, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
@@ -9,19 +9,36 @@ import { AudioGuide } from './components/AudioGuide';
 import { AmbientBlobs } from './components/AmbientBlobs';
 import './index.css';
 
+const scrollPositions = new Map();
+
+const useScrollRestoration = (id) => {
+  useLayoutEffect(() => {
+    const saved = scrollPositions.get(id);
+    if (saved !== undefined) {
+      window.scrollTo(0, saved);
+    } else {
+      window.scrollTo(0, 0);
+    }
+    const handleScroll = () => {
+      scrollPositions.set(id, window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [id]);
+};
+
 const pageVariants = {
-  initial: { opacity: 0, y: 10 },
-  in: { opacity: 1, y: 0 },
+  initial: { opacity: 0 },
+  in: { opacity: 1 },
   out: { 
     opacity: 0, 
-    y: -10, 
-    transition: { duration: 0.2, ease: 'easeIn' } // 退场略快
+    transition: { duration: 0.2 } 
   }
 };
 
 const pageTransition = { 
-  duration: 0.5, 
-  ease: [0.22, 1, 0.36, 1] // 优雅的非线性缓动 (Cubic Bezier)
+  duration: 0.4, 
+  ease: 'easeInOut'
 };
 
 const staggerVariants = {
@@ -45,6 +62,7 @@ const containerVariants = {
 
 const HomeView = ({ theme, toggleTheme, textScale, setTextScale }) => {
   const navigate = useNavigate();
+  useScrollRestoration('home');
 
   return (
     <motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}>
@@ -86,6 +104,7 @@ const ListView = ({ theme, toggleTheme, textScale, setTextScale }) => {
   const { sectionId } = useParams();
   const navigate = useNavigate();
   const sectionData = data[sectionId];
+  useScrollRestoration(`list-${sectionId}`);
 
   if (!sectionData) return <Navigate to="/" />;
 
@@ -217,11 +236,6 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
-
-  // Handle scroll to top on route change (except when using browser back/forward which uses browser history scroll restoration)
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
