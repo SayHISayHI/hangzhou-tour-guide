@@ -616,8 +616,13 @@ h1, h2, h3, h4 {
   background: transparent !important;
   border: none !important;
   color: #ffffff !important;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
   transition: all 0.3s ease;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.header-wrapper:not(.header-scrolled) .header-btn svg {
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
 }
 
 .header-wrapper:not(.header-scrolled) .header-btn {
@@ -632,7 +637,6 @@ h1, h2, h3, h4 {
   border: 1px solid rgba(163, 51, 39, 0.15) !important;
   box-shadow: 0 1px 4px rgba(163, 51, 39, 0.08) !important;
   color: var(--text-primary) !important;
-  filter: none;
 }
 
 [data-theme='dark'] .header-btn {
