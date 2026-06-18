@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
+import { LazyMotion, domAnimation, motion, AnimatePresence } from 'framer-motion';
 import { Compass, BookOpen, Star, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
 import { data } from './data';
 import { Header } from './components/Header';
