@@ -10,27 +10,26 @@ import { AmbientBlobs } from './components/AmbientBlobs';
 import './index.css';
 
 const pageVariants = {
-  initial: { opacity: 0, x: 20 },
-  in: { opacity: 1, x: 0 },
+  initial: { opacity: 0, y: 10 },
+  in: { opacity: 1, y: 0 },
   out: { 
     opacity: 0, 
-    x: -20, 
-    transition: { duration: 0.15, ease: 'easeOut' } // 退场必须干脆，否则 mode="wait" 会导致黑屏过长
+    y: -10, 
+    transition: { duration: 0.2, ease: 'easeIn' } // 退场略快
   }
 };
 
 const pageTransition = { 
-  type: 'spring', 
-  stiffness: 300, 
-  damping: 25 
+  duration: 0.5, 
+  ease: [0.22, 1, 0.36, 1] // 优雅的非线性缓动 (Cubic Bezier)
 };
 
 const staggerVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 15 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { type: 'spring', stiffness: 260, damping: 20 }
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
   }
 };
 
