@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LazyMotion, domAnimation, motion, AnimatePresence } from 'framer-motion';
+import { Routes, Route, useNavigate, useParams, useLocation, Navigate } from 'react-router-dom';
 import { Compass, BookOpen, Star, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
 import { data } from './data';
 import { Header } from './components/Header';
@@ -43,10 +44,8 @@ const containerVariants = {
   }
 };
 
-const HomeView = ({ theme, toggleTheme, navigateTo, scrollPositions, textScale, setTextScale }) => {
-  useEffect(() => {
-    window.scrollTo(0, scrollPositions.current['home'] || 0);
-  }, [scrollPositions]);
+const HomeView = ({ theme, toggleTheme, textScale, setTextScale }) => {
+  const navigate = useNavigate();
 
   return (
     <motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}>
@@ -64,7 +63,7 @@ const HomeView = ({ theme, toggleTheme, navigateTo, scrollPositions, textScale, 
           whileTap={{ scale: 0.98 }} 
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
           className="section-card micro-mask-panel" 
-          onClick={() => navigateTo('list', 'westlake')}
+          onClick={() => navigate('/list/westlake')}
         >
           <h2>西湖</h2>
           <p>人间天堂 浓妆淡抹总相宜</p>
@@ -74,7 +73,7 @@ const HomeView = ({ theme, toggleTheme, navigateTo, scrollPositions, textScale, 
           whileTap={{ scale: 0.98 }} 
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
           className="section-card micro-mask-panel" 
-          onClick={() => navigateTo('list', 'lingyin')}
+          onClick={() => navigate('/list/lingyin')}
         >
           <h2>灵隐寺</h2>
           <p>云林禅寺 仙灵所隐之圣地</p>
@@ -84,16 +83,16 @@ const HomeView = ({ theme, toggleTheme, navigateTo, scrollPositions, textScale, 
   );
 };
 
-const ListView = ({ view, theme, toggleTheme, navigateTo, scrollPositions, textScale, setTextScale }) => {
-  const sectionData = data[view.section];
+const ListView = ({ theme, toggleTheme, textScale, setTextScale }) => {
+  const { sectionId } = useParams();
+  const navigate = useNavigate();
+  const sectionData = data[sectionId];
 
-  useEffect(() => {
-    window.scrollTo(0, scrollPositions.current['list'] || 0);
-  }, [scrollPositions]);
+  if (!sectionData) return <Navigate to="/" />;
 
   return (
     <motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}>
-      <Header showBack onBack={() => navigateTo('home')} theme={theme} toggleTheme={toggleTheme} textScale={textScale} setTextScale={setTextScale} />
+      <Header showBack onBack={() => navigate('/')} theme={theme} toggleTheme={toggleTheme} textScale={textScale} setTextScale={setTextScale} />
       <div className="list-header">
         <h2>{sectionData.title}</h2>
         <p>{sectionData.description}</p>
@@ -106,7 +105,7 @@ const ListView = ({ view, theme, toggleTheme, navigateTo, scrollPositions, textS
               whileTap={{ scale: 0.98 }} 
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
               className="poi-card micro-mask-panel" 
-              onClick={() => navigateTo('detail', view.section, poi)}
+              onClick={() => navigate(`/detail/${sectionId}/${poi.id}`)}
             >
               <img src={poi.image} alt={poi.name} loading="lazy" />
               <div className="poi-card-info">
@@ -121,20 +120,25 @@ const ListView = ({ view, theme, toggleTheme, navigateTo, scrollPositions, textS
   );
 };
 
-const DetailView = ({ view, theme, toggleTheme, navigateTo, textScale, setTextScale }) => {
-  const poi = view.poi;
-  const sectionData = data[view.section];
+const DetailView = ({ theme, toggleTheme, textScale, setTextScale }) => {
+  const { sectionId, poiId } = useParams();
+  const navigate = useNavigate();
   
+  const sectionData = data[sectionId];
+  const poi = sectionData?.pois.find(p => p.id === poiId);
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [poi.id]);
+  }, [poiId]);
+
+  if (!poi) return <Navigate to="/" />;
 
   const currentIndex = sectionData.pois.findIndex(p => p.id === poi.id);
   const hasNext = currentIndex < sectionData.pois.length - 1;
   const hasPrev = currentIndex > 0;
 
-  const goNext = () => navigateTo('detail', view.section, sectionData.pois[currentIndex + 1]);
-  const goPrev = () => navigateTo('detail', view.section, sectionData.pois[currentIndex - 1]);
+  const goNext = () => navigate(`/detail/${sectionId}/${sectionData.pois[currentIndex + 1].id}`);
+  const goPrev = () => navigate(`/detail/${sectionId}/${sectionData.pois[currentIndex - 1].id}`);
 
   return (
     <motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition} className="detail-view">
@@ -142,7 +146,7 @@ const DetailView = ({ view, theme, toggleTheme, navigateTo, textScale, setTextSc
         if (typeof window !== 'undefined' && window.speechSynthesis) {
           window.speechSynthesis.cancel();
         }
-        navigateTo('list', view.section);
+        navigate(`/list/${sectionId}`);
       }} theme={theme} toggleTheme={toggleTheme} textScale={textScale} setTextScale={setTextScale} />
       
       <div className="detail-image-container">
@@ -209,25 +213,19 @@ const DetailView = ({ view, theme, toggleTheme, navigateTo, textScale, setTextSc
 function App() {
   const [theme, setTheme] = useState('light');
   const [textScale, setTextScale] = useState(1);
-  const [view, setView] = useState({ type: 'home', section: null, poi: null });
-  const scrollPositions = useRef({ home: 0, list: 0 });
+  const location = useLocation();
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  // Handle scroll to top on route change (except when using browser back/forward which uses browser history scroll restoration)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
-
-  const navigateTo = (type, section = null, poi = null) => {
-    scrollPositions.current[view.type] = window.scrollY;
-    
-    if (type === 'list' && view.type === 'home') {
-      scrollPositions.current['list'] = 0;
-    }
-    
-    setView({ type, section, poi });
   };
 
   return (
@@ -236,9 +234,11 @@ function App() {
       <AmbientBlobs theme={theme} />
       <div style={{ position: 'relative', zIndex: 1 }}>
         <AnimatePresence mode="wait">
-          {view.type === 'home' && <HomeView key="home" theme={theme} toggleTheme={toggleTheme} navigateTo={navigateTo} scrollPositions={scrollPositions} textScale={textScale} setTextScale={setTextScale} />}
-          {view.type === 'list' && <ListView key="list" view={view} theme={theme} toggleTheme={toggleTheme} navigateTo={navigateTo} scrollPositions={scrollPositions} textScale={textScale} setTextScale={setTextScale} />}
-          {view.type === 'detail' && <DetailView key={`detail-${view.poi?.id}`} view={view} theme={theme} toggleTheme={toggleTheme} navigateTo={navigateTo} scrollPositions={scrollPositions} textScale={textScale} setTextScale={setTextScale} />}
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<HomeView theme={theme} toggleTheme={toggleTheme} textScale={textScale} setTextScale={setTextScale} />} />
+            <Route path="/list/:sectionId" element={<ListView theme={theme} toggleTheme={toggleTheme} textScale={textScale} setTextScale={setTextScale} />} />
+            <Route path="/detail/:sectionId/:poiId" element={<DetailView theme={theme} toggleTheme={toggleTheme} textScale={textScale} setTextScale={setTextScale} />} />
+          </Routes>
         </AnimatePresence>
       </div>
     </div>
