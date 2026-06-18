@@ -23,9 +23,9 @@ export const Header = ({ showBack, onBack, theme, toggleTheme, title = '杭州�
     >
       {showBack ? (
         <motion.button 
-          whileHover={{ scale: 1.1 }} 
-          whileTap={{ scale: 0.9 }} 
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          whileHover={{ opacity: 0.8 }} 
+          whileTap={{ scale: 0.95 }} 
+          transition={{ duration: 0.2, ease: "easeOut" }}
           className="header-btn" 
           onClick={onBack}
         >
@@ -42,9 +42,9 @@ export const Header = ({ showBack, onBack, theme, toggleTheme, title = '杭州�
         {setTextScale && (
           <div style={{ position: 'relative' }}>
             <motion.button 
-              whileHover={{ scale: 1.1 }} 
-              whileTap={{ scale: 0.9 }} 
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              whileHover={{ opacity: 0.8 }} 
+              whileTap={{ scale: 0.95 }} 
+              transition={{ duration: 0.2, ease: "easeOut" }}
               className="header-btn" 
               onClick={() => setShowSlider(!showSlider)} 
               aria-label="调整字号"
@@ -54,10 +54,10 @@ export const Header = ({ showBack, onBack, theme, toggleTheme, title = '杭州�
             <AnimatePresence>
               {showSlider && (
                 <motion.div 
-                  initial={{ opacity: 0, y: -10, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.9 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
                   className="micro-mask-panel"
                   style={{
                     position: 'absolute',
@@ -83,9 +83,9 @@ export const Header = ({ showBack, onBack, theme, toggleTheme, title = '杭州�
           </div>
         )}
         <motion.button 
-          whileHover={{ scale: 1.1, rotate: 15 }} 
-          whileTap={{ scale: 0.9, rotate: -15 }} 
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          whileHover={{ opacity: 0.8 }} 
+          whileTap={{ scale: 0.95 }} 
+          transition={{ duration: 0.2, ease: "easeOut" }}
           className="header-btn" 
           onClick={toggleTheme}
         >

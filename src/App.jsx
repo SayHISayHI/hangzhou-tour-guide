@@ -78,7 +78,7 @@ const HomeView = ({ theme, toggleTheme, textScale, setTextScale }) => {
         <motion.div 
           whileHover={{ scale: 1.02 }} 
           whileTap={{ scale: 0.98 }} 
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
           className="section-card micro-mask-panel" 
           onClick={() => navigate('/list/westlake')}
         >
@@ -88,7 +88,7 @@ const HomeView = ({ theme, toggleTheme, textScale, setTextScale }) => {
         <motion.div 
           whileHover={{ scale: 1.02 }} 
           whileTap={{ scale: 0.98 }} 
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
           className="section-card micro-mask-panel" 
           onClick={() => navigate('/list/lingyin')}
         >
@@ -119,9 +119,9 @@ const ListView = ({ theme, toggleTheme, textScale, setTextScale }) => {
         {sectionData.pois.map(poi => (
           <React.Fragment key={poi.id}>
             <motion.div 
-              whileHover={{ scale: 1.02, x: 10 }} 
+              whileHover={{ scale: 1.01 }} 
               whileTap={{ scale: 0.98 }} 
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
               className="poi-card micro-mask-panel" 
               onClick={() => navigate(`/detail/${sectionId}/${poi.id}`)}
             >
@@ -204,7 +204,7 @@ const DetailView = ({ theme, toggleTheme, textScale, setTextScale }) => {
 
       <div className="fab-container">
         {hasPrev && (
-          <motion.button className="fab-btn" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => {
+          <motion.button className="fab-btn" whileHover={{ opacity: 0.9 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2, ease: "easeOut" }} onClick={() => {
             if (typeof window !== 'undefined' && window.speechSynthesis) {
               window.speechSynthesis.cancel();
             }
@@ -214,7 +214,7 @@ const DetailView = ({ theme, toggleTheme, textScale, setTextScale }) => {
           </motion.button>
         )}
         {hasNext && (
-          <motion.button className="fab-btn" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => {
+          <motion.button className="fab-btn" whileHover={{ opacity: 0.9 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2, ease: "easeOut" }} onClick={() => {
             if (typeof window !== 'undefined' && window.speechSynthesis) {
               window.speechSynthesis.cancel();
             }
