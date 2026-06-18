@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
 import { Compass, BookOpen, Star, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
 import { data } from './data';
 import { Header } from './components/Header';
@@ -52,7 +52,7 @@ const HomeView = ({ theme, toggleTheme, navigateTo, scrollPositions, textScale, 
     <motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}>
       <Header theme={theme} toggleTheme={toggleTheme} textScale={textScale} setTextScale={setTextScale} />
       <div className="hero">
-        <img src="/images/west_lake_su_causeway_1781707034135.png" alt="Hangzhou" />
+        <img src="/images/west_lake_su_causeway_1781707034135.webp" alt="Hangzhou" />
         <div className="hero-content">
           <h1>杭州</h1>
           <p>天堂之城 · 导游手卡</p>
@@ -108,7 +108,7 @@ const ListView = ({ view, theme, toggleTheme, navigateTo, scrollPositions, textS
               className="poi-card micro-mask-panel" 
               onClick={() => navigateTo('detail', view.section, poi)}
             >
-              <img src={poi.image} alt={poi.name} />
+              <img src={poi.image} alt={poi.name} loading="lazy" />
               <div className="poi-card-info">
                 <h3>{poi.name}</h3>
                 <p>{poi.history}</p>
@@ -146,7 +146,7 @@ const DetailView = ({ view, theme, toggleTheme, navigateTo, textScale, setTextSc
       }} theme={theme} toggleTheme={toggleTheme} textScale={textScale} setTextScale={setTextScale} />
       
       <div className="detail-image-container">
-        <img src={poi.image} alt={poi.name} className="detail-image" />
+        <img src={poi.image} alt={poi.name} className="detail-image" loading="lazy" />
         <div className="detail-image-mask" />
       </div>
 
@@ -231,6 +231,7 @@ function App() {
   };
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className={`app-container ${textScale < 1.0 ? 'low-scale' : ''}`} style={{ '--text-scale': textScale }}>
       <AmbientBlobs theme={theme} />
       <div style={{ position: 'relative', zIndex: 1 }}>
@@ -241,6 +242,7 @@ function App() {
         </AnimatePresence>
       </div>
     </div>
+    </LazyMotion>
   );
 }
 

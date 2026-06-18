@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'FZShengSKSJW_Zhun';
-  src: url('/fonts/FZShengSKSJW_Zhun.TTF') format('truetype');
+  src: url('/fonts/FZShengSKSJW_Zhun.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap; /* 立即显示系统字体，加载完再无缝替换，不影响速度 */
@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: 'FZShengSKSJW_Zhong';
-  src: url('/fonts/FZShengSKSJW_Zhong.TTF') format('truetype');
+  src: url('/fonts/FZShengSKSJW_Zhong.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
